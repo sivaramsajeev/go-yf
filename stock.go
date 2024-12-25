@@ -9,6 +9,14 @@ type Stock struct {
 		FirstTradeDate       int64
 		GmtOffset            int64 `json:"gmtoffset"`
 		Timezone             string
+		RegularMarketPrice   float64
+		FiftyTwoWeekHigh     float64
+		FiftyTwoWeekLow      float64
+		RegularMarketDayHigh float64
+		RegularMarketDayLow  float64
+		RegularMarketVolume  float64
+		LongName             string
+		ShortName            string
 		ExchangeTimezoneName string
 		CurrentTradingPeriod struct {
 			Pre     TradingPeriod
