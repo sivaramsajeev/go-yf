@@ -5,7 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"text/template"
+	"time"
 )
 
 const (
@@ -66,7 +68,7 @@ func doRequest(symbol, dateRange, interval string) (*http.Response, error) {
 	}
 
 	debug(url.String())
-	return http.Get(url.String())
+	return newReq(url.String())
 }
 
 func debug(str string) {
@@ -75,4 +77,29 @@ func debug(str string) {
 	}
 
 	fmt.Println(str)
+}
+
+func newReq(urlStr string) (*http.Response, error) {
+	parsedURL, err := url.Parse(urlStr)
+	if err != nil {
+		return nil, fmt.Errorf("invalid URL: %w", err)
+	}
+
+	client := &http.Client{
+		Timeout: 10 * time.Second,
+	}
+
+	req, err := http.NewRequest("GET", parsedURL.String(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+
+	req.Header.Set("User-Agent", "MyCustomAgent/1.0 (Go HTTP Client)")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("request failed: %w", err)
+	}
+
+	return resp, nil
 }
